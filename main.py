@@ -2,13 +2,16 @@ import sys
 import math
 
 
+done = False
+
+
 # Prints the current board to the console
 def print_board(board):
     print("-------------------------")
     for i in range(9):
         if i in (3, 6):
             print("|-----------------------|")
-        print("| ", end ="")
+        print("| ", end="")
         for j in range(9):
             if j in (3, 6):
                 print("| ", end="")
@@ -41,7 +44,6 @@ def possibilities(board, y, x):
         for j in range(int(math.floor(y / 3) * 3), int(math.floor(y / 3) * 3) + 3):
             for k in range(int(math.floor(x / 3) * 3), int(math.floor(x / 3) * 3) + 3):
                 if board[j][k] == i:
-                    # print(str(j) + ", " + str(k) + ": " + str(board[j][k]))
                     flag = True
 
         if not flag:
@@ -51,8 +53,8 @@ def possibilities(board, y, x):
 
 
 # Recursive algorithm to solve the puzzle
-def recursive_solve(board):
-    if not is_full(board):
+def recursive_solve(board, solved):
+    if not is_full(board, solved):
         y = 0
         x = 0
 
@@ -65,25 +67,30 @@ def recursive_solve(board):
                     x = j
                     flag = True
 
-        # Recursion into each possibility
-        for item in possibilities(board, y, x):
-            board[y][x] = item
-            recursive_solve(board)
-        # Backtrack
-        if not is_full(board):
-            board[y][x] = 0
+        if not is_full(board, solved):
+            # Recursion into each possibility
+            for item in possibilities(board, y, x):
+                board[y][x] = item
+                recursive_solve(board, solved)
+            # Backtrack
+            if not is_full(board, solved):
+                board[y][x] = 0
     else:
         return
 
 
 # Checks whether the board has been filled or not
 # If there are any zeroes present, the board is not full
-def is_full(board):
+def is_full(board, solved):
     flag = True
     for i in range(9):
         for j in range(9):
             if board[i][j] == 0:
                 flag = False
+    if flag and solved[0][0] == 0:
+        for i in range(9):
+            for j in range(9):
+                solved[i][j] = board[i][j]
     return flag
 
 
@@ -92,6 +99,7 @@ def main():
         print("USAGE: " + sys.argv[0] + " FILENAME")
 
     board = [[0] * 9 for i in range(9)]
+    solved = [[0] * 9 for i in range(9)]
 
     # Write puzzle file to array
     try:
@@ -104,10 +112,11 @@ def main():
         print("File not found.")
         return 1
 
+    print("Puzzle: ")
     print_board(board)
-    recursive_solve(board)
+    recursive_solve(board, solved)
     print("\nSolved!")
-    print_board(board)
+    print_board(solved)
 
 
 if __name__ == '__main__':
