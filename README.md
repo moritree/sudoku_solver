@@ -1,7 +1,8 @@
 # sudoku_solver
-Brute force sudoku-solving console app
 
-To run:
+A recursive backtracking brute force algorithm to solve any (possible) sudoku puzzle.
+
+## To run
 ```
 ./main.py FILENAME
 ```
