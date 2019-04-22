@@ -2,9 +2,6 @@ import sys
 import math
 
 
-done = False
-
-
 # Prints the current board to the console
 def print_board(board):
     print("-------------------------")
@@ -26,7 +23,6 @@ def print_board(board):
 # Checks all possibilities for the square located at x y
 def possibilities(board, y, x):
     options = []
-
     for i in range(1, 10):
         flag = False
 
@@ -34,7 +30,6 @@ def possibilities(board, y, x):
         for j in range(9):
             if board[y][j] == i:
                 flag = True
-
         # Check column
         for j in range(9):
             if board[j][x] == i:
@@ -67,14 +62,12 @@ def recursive_solve(board, solved):
                     x = j
                     flag = True
 
-        if not is_full(board, solved):
-            # Recursion into each possibility
-            for item in possibilities(board, y, x):
-                board[y][x] = item
-                recursive_solve(board, solved)
-            # Backtrack
-            if not is_full(board, solved):
-                board[y][x] = 0
+        # Recursion into each possibility
+        for item in possibilities(board, y, x):
+            board[y][x] = item
+            recursive_solve(board, solved)
+        # Backtrack
+        board[y][x] = 0
     else:
         return
 
